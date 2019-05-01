@@ -1,8 +1,8 @@
 PImage title, gameover, startNormal, startHovered, restartNormal, restartHovered;
 PImage groundhogIdle, groundhogLeft, groundhogRight, groundhogDown;
-PImage bg, life, cabbage, stone1, stone2, soilEmpty;
+PImage bg, life, cabbage, rock1, rock2, soilEmpty;
 PImage soldier;
-PImage soil0, soil1, soil2, soil3, soil4, soil5;
+PImage [] soil = new PImage[6];
 PImage[][] soils, stones;
 
 final int GAME_START = 0, GAME_RUN = 1, GAME_OVER = 2;
@@ -21,6 +21,8 @@ final int START_BUTTON_X = 248;
 final int START_BUTTON_Y = 360;
 
 float[] cabbageX, cabbageY, soldierX, soldierY;
+float cabX=floor(random(0,8))*80;
+float cabY=floor(random(2,6))*80;
 float soldierSpeed = 2f;
 
 float playerX, playerY;
@@ -35,6 +37,8 @@ final int PLAYER_MAX_HEALTH = 5;
 int playerMoveDirection = 0;
 int playerMoveTimer = 0;
 int playerMoveDuration = 15;
+float knightX=-80;
+float knightY=int(random(2,6))*80; 
 
 boolean demoMode = false;
 
@@ -54,16 +58,15 @@ void setup() {
 	life = loadImage("img/life.png");
 	soldier = loadImage("img/soldier.png");
 	cabbage = loadImage("img/cabbage.png");
+  rock1 = loadImage("img/stone1.png");
+  rock2 = loadImage("img/stone2.png");
 
 	soilEmpty = loadImage("img/soils/soilEmpty.png");
 
 	// Load soil images used in assign3 if you don't plan to finish requirement #6
-	soil0 = loadImage("img/soil0.png");
-	soil1 = loadImage("img/soil1.png");
-	soil2 = loadImage("img/soil2.png");
-	soil3 = loadImage("img/soil3.png");
-	soil4 = loadImage("img/soil4.png");
-	soil5 = loadImage("img/soil5.png");
+  for(int i=0; i<6;i++){
+    soil[i] = loadImage("img/soil"+(i)+".png"); 
+  }
 
 	// Load PImage[][] soils
 	soils = new PImage[6][5];
@@ -163,7 +166,36 @@ void draw() {
 			}
 		}
 
+    //if(){
+    int soilEmptyX=int(random(8))*80;
+    int soilEmptyY=int(random(3,6))*80;
+    image(soilEmpty,soilEmptyX,soilEmptyY);
+    //}
+    
+    //stone
+
+    int rock1Health=(int)playerY+SOIL_SIZE;
+      for(int i = 0; i < soilHealth.length; i++){
+        for(int x=0; x<width ; x+=SOIL_SIZE){
+          //for (int j = 0; j < 8; j++) {
+            image(rock1,x,rock1Health);
+            rock1Health+=SOIL_SIZE;
+            soilHealth[i][8] = 30;
+          }
+        }
+      //}
+    
+    for(int i = 0; i < soilHealth.length; i++){
+      for (int j = 0; j < 8; j++) {
+         // 0: no soil, 15: soil only, 30: 1 stone, 45: 2 stones
+        soilHealth[i][j] = 30;
+      }
+    }
+
 		// Cabbages
+    image(cabbage,cabX,cabY);
+    
+
 		// > Remember to check if playerHealth is smaller than PLAYER_MAX_HEALTH!
 
 		// Groundhog
@@ -285,7 +317,18 @@ void draw() {
 
 		image(groundhogDisplay, playerX, playerY);
 
+    //hog hit soil get down
+    if(playerY+SOIL_SIZE==soilEmptyY){
+      playerY+=80;
+    }
+
 		// Soldiers
+    image(soldier,knightX,knightY);
+        //or knightY=knightDistance*80;
+        knightX+=5;
+        if(knightX>width){
+          knightX=-80;
+        }
 		// > Remember to stop player's moving! (reset playerMoveTimer)
 		// > Remember to recalculate playerCol/playerRow when you reset playerX/playerY!
 		// > Remember to reset the soil under player's original position!
